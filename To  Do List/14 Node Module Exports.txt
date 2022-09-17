@@ -1,0 +1,176 @@
+How have we been requiring node modules?
+
+const express = require("express");
+
+node modules:  ejs,express,body-parser etc
+
+How node modules passing works?
+
+
+1) Open 
+	Node_modules -> ejs -> ejs.js
+
+//contains variables
+constains functions
+contains exports
+
+	exports.localname = _DEFAULT_LOCALS_NAMEa
+
+
+How do they work?
+
+
+1) Create your own module?
+//The entire code below generates current day in a format we want
+app.get("/". function(req,res){
+ let today= new Date();
+
+ let options = {
+  weekday: "long"
+  day : "numeric",
+   month: "long" 
+};
+let day = today.toLocalDateString("en-US", options);
+
+res.render("list",  {listTitle:day, newListItems: items});
+});
+
+2) Refactor code
+Lets try to refactor code? we would wanna package the code into its own module
+//It doesnt belong in app.js
+//as we get more routes in app.js -> shouldnt include code not related to routes in app.js
+
+How to refactor?
+3) Create your own module for generating date 	//find date , change to a format
+  a) Create views -> date.js
+
+date.js
+
+//jshint esversion:6
+let today = new Date();
+ let options = {
+  weekday: "long"
+  day : "numeric",
+   month: "long" 
+};
+let day = today.toLocalDateString("en-US", options); 
+
+  b) How to get variable day back into app.js
+		Why? for using in root route
+
+
+   a.1) wrap in function and return
+   function getDate() {
+	//jshint esversion:6
+ let options = {
+  weekday: "long"
+  day : "numeric",
+   month: "long" 
+};
+let day = today.toLocalDateString("en-US", options); 
+return day;	
+} 
+   a.2) How to make it available  elsewhere
+	Docs -> v 10.12 API -> Modules
+	What is module? give reference to the object that represents the current module
+date.js
+	console.log(module);
+	   function getDate() {
+		//jshint esversion:6
+		 let options = {
+		  weekday: "long"
+		  day : "numeric",
+		   month: "long" 
+	};
+
+app.js
+			//How to use module? for ex date module
+			//require date module
+	const date = require("date.js")	//binds exports to const date 
+			//local modules need dirname where they are locate
+	const date = require(__dirname + "date.js");
+------
+test:
+node app.js
+
+//module object is logged
+	Modul.e object properties
+		id,export, parent, children, paths etc
+
+//children modules like express, date, body parse
+//module object representing date module
+
+What exports do?
+exports : {} 		//empty module is not exporting anything
+			//Documentation -> module.exports	: JS Object
+		
+________________________________________________________________________________________________
+Access string using module
+
+Using Our Module
+date.js
+module.exports = "HelloWorld"'	// Date module exports string Hello world	//Export of date module is string
+				//Call string bound to that const date
+	      function getDate() {
+		//jshint esversion:6
+		 let options = {
+		  weekday: "long"
+		  day : "numeric",
+		   month: "long" 
+	};
+
+App.js
+
+const date = require(__dirname+ "/date.js")					//object date bound to export of date.js
+console.log(date); 
+
+Output:
+HelloWorld
+
+_____________________________________________________________________________________________________
+Access function in this module
+date.js
+module.exports = getDate;
+function getDate () {
+let today = new Date();
+ let options = {
+		  weekday: "long"
+		  day : "numeric",
+		   month: "long" 
+	}
+
+let day = today.toLocaleDateString("en-us", options);
+
+return day;
+
+}
+app.js
+const date = require(__dirname+ "/date.js")					//Use export in different file
+console.log(date); 	//just tell, wont run
+console.log(date*());  //will run 
+app.get("/", function(req,res){
+ let day = date();	//	day is bound to output of date module
+ 
+  res.render("list", {listTitle: day, newListItems: items})
+})
+
+Output:
+Function: getDate		//wont run the function // just tells
+Friday, October 19 
+
+
+Test:
+node app.js
+localhost:3000 
+can see 
+Friday, October 19 	///output of date module is passed via export from date.js to app.js and is then rendered
+
+
+SUMMARY :
+1) Moved code out of app.js
+2) Put into separate module
+3) Use inside app.js / any other file
+
+//How is this code good?
+Completely reusable.
+can require and use anywhere

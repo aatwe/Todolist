@@ -1,0 +1,11 @@
+Show date and month on top
+
+Check off items
+
+
+Add new items to list using button 
+
+
+
+linter error EJS -> Atom preferences -> Disable jshint linter
+	Install language-ejs

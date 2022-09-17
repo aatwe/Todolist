@@ -1,0 +1,20 @@
+why create templates
+for ex 
+if (weekday)
+	res.send(weekend.html)
+else:
+	res.send(weekday.html )
+
+
+
+What if you want to send 7 different html files for different day	
+
+For todo list app
+suppose we have
+home list, todolist, grocery list
+contents are similar
+not efficient to create separate html files for each
+
+
+
+How to make templates? EJS

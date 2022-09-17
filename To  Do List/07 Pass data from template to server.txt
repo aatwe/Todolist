@@ -1,0 +1,67 @@
+Objective?
+1) Calculate today's date in app.js
+2) Convert today's date in your choice format
+3) Render list.ejs html with today's date passed from app.js to list.ejs via tags as OUTPUT
+Avoid switch statements.Use JS
+
+
+method: toLocaleDateString();
+	-> Allows to format JS using whichever formatwe wish
+
+Create options object
+use object with method to specify your wanted format
+
+
+Ans
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+app.set('view engine', 'ejs');		//tells app to use ejs as view engine
+					
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric"}
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ 
+
+var today = new Date();
+
+var options = {
+ weekday: "long",
+ day: "numeric",
+ month: "long"
+};
+
+
+//pass and use object to render date
+var day= today.toLocaleDateString("en-US", options);		//Date formatted
+})			
+			
+res.render("list", {
+kindOfDay: day
+})
+
+app.listen(3000, function(){
+  console.log("Server started on port 3000");
+})
+
+____________________________________________________________________________________________________
+
+list.ejs
+
+  <!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+ <h1> <%= kindOfDay %></h1>     
+
+  </body>
+</html>	
+
+_______________________________________________________________________________________________________
+Output
+Thursday, June 7

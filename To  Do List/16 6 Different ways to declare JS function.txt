@@ -1,0 +1,42 @@
+1) Function declaration
+
+
+function isEven(input) {
+  return output;
+}
+
+
+2) Function expression
+	//Assign function to variable
+	   pass function when needed
+
+var isTruthy = function(expression) {
+  return value;
+}
+_----------------------------------------------
+//implement
+
+1) function getDate()  -> change to --> function ()	//anonymous function
+2) bind function to variable getDate
+
+module.exports.getDate = getDate;		//or can write module.exports.getDate = function () {....}
+var getDate = function() {
+  let today = new Date();
+  let options = {
+   weekday: "long"
+   day: "numeric",
+   month: "long"  
+};  
+ }
+
+3) Node JS export shortcut
+
+use exports instead of module.exports
+exports.getDate = function() {
+}
+
+
+
+quick question?
+can you assigna const array to different array? no
+can you change elements/push elements in const array? yes

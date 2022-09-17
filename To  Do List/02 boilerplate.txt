@@ -1,0 +1,25 @@
+touch index.html app.js
+npm init
+npm install express body-parser
+Atom .	//open project
+
+______________________________________
+1) Develop your app
+
+
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ res.send("hello");			//we have been sending data from server to browser via send method
+})				//can also do calculations/processing server side like
+				var a = 3+ 5
+				res.send(a);
+
+
+app.listen(3000, function(){
+  console.log("Server started on port 3000");
+})
+_______________________________________________________

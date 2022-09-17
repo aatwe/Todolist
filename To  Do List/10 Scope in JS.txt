@@ -1,0 +1,22 @@
+creating variable: var x = 2 ;
+accessing variable console.log(x);
+
+Function:  Hard wall
+If/else: Soft wall
+
+1) if create inside function, access inside function
+3) Create outside, access inside + outside
+
+Scope of
+	Local variable: local to where they were declared	//inside curly braces
+
+	
+	Global Variable: create outside, access inside + outside
+
+--------------------------------------------------------------------------
+ //avoid using var . whhy?
+var x = 	2;	//if create inside --> local	,if create outside ---> Global,	if create in if/else/while/for ---> Global
+	
+let y = 3;		//if create inside --> local	if create outside --->  Global		if create in if/else/while/for ---> Local
+
+const z = 4;	//value cannot be changed   if create outside --->  Global		if create in if/else/while/for ---> Local

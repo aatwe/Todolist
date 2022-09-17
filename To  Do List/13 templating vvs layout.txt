@@ -1,0 +1,314 @@
+why we used ejs? to create template ->to create lots of similar pages
+			for ex list with different titles
+
+ open list on different day -> different title
+
+
+objective:
+
+go to localhost:3000/work	//listwith title work
+
+
+How to do? Template
+
+1) replace kindOfDay to listTitle	//localhost:3000/listTitle
+2) Add another route (get and post): work route in app.js
+3) add workitems[] , pass in work route
+4) Get some information from post request
+5) check log	//we have 2 keys
+	{newItem: 'Finish homework', button: ''}}
+6) Change name of button to list
+	Change value to EJS tag inside form in list.ejs, get from server put on top of list title
+7) Test again and check where item added
+8) Go back to server , make logic to check
+	if new item came from  work list -> add workitem array and redirect to app.get("/work") and render list "Worklist" from workItems
+		 or home
+	if(req.body.list === "work")	-> Push array into work item
+  	workItems.push(item);
+	res.redirect("/work");
+}
+	else {
+ 	items.push(item);
+	res.redirect("/");
+}
+9) Test Again
+___________________________________________________________________________
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>		*********
+  </head>
+  <body>   
+
+//Add  extra div for timeofday
+<div class="box" id="heading">
+ <h1> <%= listTitle %></h1>   //Copy paste tag 
+</div>
+
+//Add extra div for dynamic list of items
+
+<div class="box" id="heading">	
+	<li> <%newListItem %></li>	
+</div>
+<div class="box">
+	 < %for(let i=0; i<newListItems.length; i++) { %>							//Loop through
+	<div class="item">
+		<input type="checkbox" >
+		  <p><%= newListItems[i] %></p>
+</div>
+
+<% } %>
+<form class="item" action="/" method="post">	//posts info inside form  to server at home route
+    <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+    <button type="submit" name="list" value=<%= listTitle %>> + </button>				//Get from server. put on top of list
+</form>
+</div>	
+	//Unordered list with list of items
+  </body>
+</html>	
+______________________________________________________________
+
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages\
+const app = express();		//create our app
+
+let items = ["Buy Food", "cook Food", "Eat Food"];
+let workitems = []
+
+app.set('view engine', 'ejs');		//tells app to use ejs as view engine
+	
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));		*******		
+		
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric"}
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ 
+
+	var today = new Date();
+
+	var options = {
+	 weekday: "long",
+	 day: "numeric",
+	 month: "long"
+	};
+
+	//pass and use object to render date
+	let day= today.toLocaleDateString("en-US", options);		//Date formatted
+	})			
+	res.render("list", { listTitle: day, newListItems: item});		//remember to Add new list item in app.get  //give both variables that we wanna render
+});
+//HANDLE POST REQUEST TO A PARTICULAR ROUTE 	//Home Route
+app.post("/", function(req, res)) {			//Trigger callback with request and response
+  let item = req.body.newItem					//How to grab value	//remember to setup body parser b4 using body
+  								//declare item on top globally
+	
+	items.push(item);
+  <input type="text" name="newItem">		//Grab value inside text box "newItem"
+	console.log(item);				//Log post request
+	
+	if(req.body.list === "work"){
+  	workItems.push(item);
+	res.redirect("/work");
+}
+	else {
+ 	items.push(item);
+	res.redirect("/");
+}
+
+
+}
+						//Add another route : work route in App.js
+app.get("/work", function(req,res)) {
+  res.render("list", {listTitle: "Work List", newListItems: workItems });
+}
+
+app.post("/work", function(req,res)) {
+  let item = req.body.newItem;	
+  workItems.push(item);
+  res.redirect("/work");
+
+}			
+app.listen(3000, function(){
+	  console.log("Server started on port 3000");
+})
+
+__________________________________________________________
+Test/Implement
+
+localhost:3000/work
+Work list is empty
+Write essay  -> Submit
+check log	//we have 2 keys
+	{newItem: 'Finish homework', button: ''}}
+=----------------
+Test again
+localhost:3000/work
+Worklist is empty
+add item
+check log
+	{newItem: 'sdfsdf', list: 'Work'}	// Check is new item in work list or default list
+
+
+------------------------------
+Test again
+localhost:3000/work
+Add new item -> Click add
+it gets added to empty worklist 
+
+
+Total 2 separate list operating independently from each other
+//WE ARE USING list.ejs for many different lists 
+
+What problem?
+What if i want to create pages dramatically different?
+ i.e we want other page without list/checkboxes
+for ex about/contact page
+we need same style
+_____________________________________________________________________
+
+
+
+
+1) Method 1
+	create about.html
+		//add footer
+	Copy some parts like boiler plate etc make changes,
+	then add them to other pages, you might forget to add somewhere
+NOT GOOD METHOD
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>	
+  </head>
+  <body>   
+ A todo list designed by Abhilash Atwe
+  </body>
+<footer>	
+ copyright 2022 atwe inc
+</footer>
+</html>
+
+2) Method 2
+EJS -> Layouts or Partials
+
+//Check documentation
+
+howt o implement layouts? by including headers and footers
+			top and bottom stay same
+Commonwhy? most sites have standard look, same color etc
+
+<%- include('header'); -%>
+<h1>
+  Title
+</h1>
+<p>
+  My Page
+</p>
+<% include('footer');  -%>
+
+----------------------------------
+1) Create new file views/header.ejs
+	
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>	
+  </head>
+  <body>   
+
+
+
+
+2)	               views/footer.ejs
+
+  </body>
+<footer>	
+ copyright 2022 atwe inc
+</footer>
+</html>
+
+
+3) Add these to all file we create
+	list.ejs
+------------------------------------------------------------
+<%- include("header") -%>
+------------------------------------------------------------
+
+<div class="box" id="heading">
+ <h1> <%= listTitle %></h1>   //Copy paste tag 
+</div>
+
+//Add extra div for dynamic list of items
+
+<div class="box" id="heading">	
+	<li> <%newListItem %></li>	
+</div>
+<div class="box">
+	 < %for(let i=0; i<newListItems.length; i++) { %>							//Loop through
+	<div class="item">
+		<input type="checkbox" >
+		  <p><%= newListItems[i] %></p>
+</div>
+
+<% } %>
+<form class="item" action="/" method="post">	//posts info inside form  to server at home route
+    <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+    <button type="submit" name="list" value=<%= listTitle %>> + </button>				//Get from server. put on top of list
+</form>
+</div>	
+
+------------------------------------------------------------
+<%- include("footer") -%>
+------------------------------------------------------------
+
+What if we refresh todo list? Nothing changes
+				
+But now
+1)	Create View -> About.ejs
+
+
+
+
+About.ejs
+
+<h2>This is the about page </h2>
+
+<p> gabadgabadgabad  </p>
+
+2) in app.js ->	//Get route for about page
+
+app.get("/about", function(req,res){
+  res.render("about");	//no parameters for about page
+
+});
+
+3) Test
+	localhost:3000/about
+We seee unstyled page/. Why unstyled? We didnt add any of the layouts
+
+This is about page
+
+gabadgabadgabad
+
+
+1) -> Lets add header and footer to about.ejs
+
+How can we use header and footer layouts ?
+//We are using header and footer layouts to style website , include JS or JQuery /assets etc
+
+<%- include("header" -%>
+<h2>This is the about page </h2>
+
+<p> gabadgabadgabad  </p>
+<%- include("footer" -%>
+
+2) Refresh our page -> about.ejs will have same styling as previous pages (Even if page looks dramatically different tha n previous)
+ADVANTAGE ? Didnt have to repeate code.
+

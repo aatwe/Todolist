@@ -1,0 +1,123 @@
+1) Create a new list item with ejs tag in list.ejs
+2) Pass in new list "item" from app.js -> app.post to list.ejs using tag
+	//remember to pass for new list item in app.get
+	//in app.post instead of res.render use res.redirect
+3) Dont create item variable in app.post instead create at top of file
+4) When we create new post request, replace value of "item" variable
+		<li> <%newListItem %></li> becomes latest item
+
+for ex last item = eat more food
+we add cucumber,
+cucumber replaces eat more food
+	Solution : store items in collection global var
+	when new post request -> new var item -> append item to array items
+
+Also loop through collection/array to keep in new lines, otherwise it will print in straight list
+remember to add tag
+
+-------------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+ <h1> <%= kindOfDay %></h1>     
+	//Unordered list with list of items
+<ul>	
+	<li> <%newListItem %></li>	
+
+<%for(var i=0; i<newListItems.length; i++) {%>							//Loop through
+
+	<li><%= newListItems[i] %></li>
+<% } %>
+
+</ul>
+
+<form class="" action="/" method="post">	//posts info inside form  to server at home route
+
+  <input type="text" name="newItem">
+  <button type="submit" name="button"> Add </button>
+</form>
+
+  </body>
+</html>	
+--------------------------------------
+App.js
+
+//When access localhost -> land in home route
+
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+var items = ["Buy Food", "cook Food", "Eat Food"];
+
+app.set('view engine', 'ejs');		//tells app to use ejs as view engine
+	
+app.use(bodyParser.urlencoded({extended: true}));
+				
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric"}
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ 
+
+	var today = new Date();
+
+	var options = {
+	 weekday: "long",
+	 day: "numeric",
+	 month: "long"
+	};
+
+	//pass and use object to render date
+	var day= today.toLocaleDateString("en-US", options);		//Date formatted
+	})			
+	res.render("list", { kindOfDay: day, newListItems: item});		//remember to Add new list item in app.get  //give both variables that we wanna render
+});
+//HANDLE POST REQUEST TO A PARTICULAR ROUTE 	//Home Route
+app.post("/", function(req, res)) {			//Trigger callback with request and response
+  
+  <input type="text" name="newItem">		//Grab value inside text box "newItem"
+	var item = req.body.newItem					//How to grab value	//remember to setup body parser b4 using body
+  	console.log(item);						//declare item on top globally
+	
+	items.push(item);
+	res.render("/");
+}
+app.listen(3000, function(){
+	  console.log("Server started on port 3000");
+})
+
+
+//Flow?	post request triggered on home route -> Save value of new item in text box to var item -> redirect to home route  -> triggers app.get
+	 => render list template -> pass kindOfDay and newListItem
+							
+
+TEST:
+
+For every single new item in input ->Add button
+added to ul
+each item gets new li	
+
+
+Summary Flow:
+1) Load home page
+2) go through home get route, render  list.ejs (p) , passing 2 items kindOfDay and newListItems, newListItems= items []
+3) items = ["Buy Food", "Cook Food", "Eat Food"]
+4) items passed into list.ejs in newListItems[i] thorugh render
+		for loop loops through newListItems[] array
+		new li rendered for each item inside array
+
+5) When user adds new item through text input
+	Saved under var name = "newItem"
+	trigger post request to home route via form
+	caught by app.post 
+6) grab value : 	var item =req.body.newItem;	//whatever user types
+7) Save insdie item
+8) add item to our array items
+	redirect to home route
+9)control back to  app.get	// but items array has increased by 1, new item pushed to end of array
+10) render list again, pass over updated array with all of our list items

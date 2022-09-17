@@ -1,0 +1,77 @@
+1)  Export multiple functions in node module
+Date.js
+_____________
+//module.exports = get.Date;			//bound to getDate	//what is module.exports ? object
+module.exports.getDate = getDate;
+
+1) 	
+function getDate() {
+let today = new Date();
+ let options = {
+		    weekday: "long"
+		  day : "numeric",
+		   month: "long" 
+	}
+
+let day = today.toLocaleDateString("en-us", options);
+return day;
+
+	}
+2)
+module.exports.getDay = getDay;
+function getDay() {
+let today = new Date();
+ let options = {
+		    weekday: "long"
+	}
+
+
+let day = today.toLocaleDateString("en-us", options);	//bind to day
+return day;		//return day as function output
+	}
+--------------
+console.log(module.exports);
+
+_____________
+App.js
+
+const date = require(__dirname + "/date.jss")
+-------------
+node app.js
+//2 functions logged for export object
+
+{getDate: [Function: getDate], getDay: [Function: getDay]]}
+-------------
+Run the function
+//App.js
+ let day = date.getDate();
+
+  res.render("list", {listTitle: day, newListItems: items}); 
+
+---------------
+or
+ let day = date.getDay();
+
+  res.render("list", {listTitle: day, newListItems: items}); 
+
+
+---------------
+O/p1
+//restart server
+node app.js
+Open-> localhost:3000
+//Still working -> can see day and date
+	
+
+O/p2
+//restart server
+node app.js
+Open-> localhost:3000
+//Still working -> can see day 	
+____________________________________________________________
+
+SummaryL
+1) we created our own modules
+2) we require them and export out of module
+3) Use anywhere in project
+_____________________________________________________________

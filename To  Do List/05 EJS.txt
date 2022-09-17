@@ -1,0 +1,138 @@
+Embedded Javascript templating : Module used for templating, can use other modules also
+
+We use EJS with express 	(documentation)
+
+
+1) INstall EJS Module
+	npm i ejs
+
+	//Check : From package.json
+2) Set app view engine to ejs	
+	Note:	//assumes views directory containing index.ejs file
+
+	app.use('view engine', 'ejs');	//place below const app, if you dont error -> app used before declared
+	 
+
+-----------------------------------------------------------------------------------------------------------------------------------
+const express = require("express");		//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+				//tells app to use ejs as view engine
+				
+				Note:	//assumes views directory containing index.ejs file
+					
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ res.render('index', {foo: 'FOO'});	//render a page using the view engine ejs
+				//which page rendered : index.ejs  
+
+
+var today = new Date();
+if(today.getDay() === 6 || today.getDay() === 0){
+		
+		//How to send multiple html?res.write 
+	res.write(<h1>lets have fun</h1>);
+	res.write(<h1>tomorrow</h1>);
+	res.send("<h1>Yay weekend</h1>");	
+			//Write res.send() in last
+			//Analogy for res.send and res.write	
+				       Messenger    Email
+}
+else {
+	res.sendFile(__dirname + "/index.html");	
+}				
+})			
+				//What is variable foo and value FOO 
+			
+app.listen(3000, function(){
+  console.log("Server started on port 3000");
+})
+
+3) Create a views folder with EJS file in it
+	What is purpose of folder? This is where view engine EJS looks for trying to render files
+
+	for todo app->
+	todolist-v1 -> views -> list.ejs
+
+
+What will we write in list.ejs file?
+HTML works in ejs file
+
+How to pass information from app.js(logic file) and place in list.ejs?
+	Using marker: tells file where to place a variable
+
+-------------------------------------------------------------------------------
+EJS Marker: anything in marker replaced by variable value by file	//There are more tags like this
+
+<%= EJS %>
+
+-------------------------------------------------------------------------------
+List.ejs
+
+     <!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+	<h1>Its a <%= kindOfDay %>!</h1>
+	
+  </body>
+</html>
+____________________________________________________________
+Pass variable from server to our template using EJS and markers
+Render template
+
+1)Assign a final variable "day" from app logic in app.js
+2) pass the variable from app.js to list.ejs
+ 	How to pass? Place a marker in list.ejs
+4) Render list.ejs
+	instead of res.sendFile,res.render("list.ejs")
+	//What render does? express looks inside views folder	//views by default
+			looks for file list.ejs			//list by default	//follow name
+	Render syntax
+	res.render("ejs_file", {ejs_file_marker: value_from_appjs});
+	res.render("list", {kindOfDay: day});		
+	
+	NOTE: EJS Marker name should be different than variable 
+	           Can pass over more and more variables by template
+
+
+App.js
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+app.use('view engine', 'ejs');		//tells app to use ejs as view engine
+				
+				Note:	//assumes views directory containing index.ejs file
+					
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ res.render('index', {foo: 'FOO'});	//render a page using the view engine ejs
+				//which page rendered : index.ejs  
+
+
+var today = new Date();
+var currentDay = today.getDay();
+var day = " "
+
+if(currentDay() === 6 || currentDay() === 0){
+  day = "Weekend";					//Assign variable from app logic
+} else{
+  day = "Weekday";					
+}				
+	
+   res.render("list" + {kindOfDay: day});			//Replace marker with variable and Render  
+				
+});						//App.get route ends			
+//What is variable foo and value FOO 
+			
+
+
+app.listen(3000, function(){
+  console.log("Server started on port 3000");
+})

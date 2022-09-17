@@ -1,0 +1,136 @@
+1) Downoad styles.css
+https://drive.google.com/uc?export=download&id=1y5dsPlZSKAG8Xc-YZQO-biFbo96_9g3G
+
+
+2) Open in Atom
+	move file in style.css folder
+
+3) Access in list.ejs by adding link to stylesheet
+	Try reloading -> nothing implements why? 
+					our css folder is in root of project
+					when using express, it doesnt serve all files,
+					 it serves  
+						main access point : app.js (check package.json)
+						Views folder => list.ejs
+						everything else ignored	
+				so http://localhost:3000/css/Styles.css wont work	//not a static website anymore
+
+	For static files	 -> can just put link in browser and navigate page to page
+				localhost:3000  wont help fidn this file at location
+
+4) Then HOW TO ACCESS CSS?
+ Tell Express explicitly -> serve up css files
+ app.use(express.static("public"));
+
+	tell location of file
+	tell to use it			
+
+Other static files ex Plane JS, Images, Sound assets
+
+1) Create new public folder(With CSS,JS, Images folder)
+
+2) Tell express to serve folder as static resource
+	app.use(express.static("public"));
+
+
+5) Refresh -> CSS applied
+6) Move time and dynamic list of items in separate divs for css to work
+	Change dynamic list of items to paragraph and move into div
+	Add check box instead of bullet point
+7) Put form inside div
+8) remove autocomplete from form input since we dont need
+______________________________________________________________________
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>		*********
+  </head>
+  <body>   
+
+//Add  extra div for timeofday
+<div class="box" id="heading">
+ <h1> <%= kindOfDay %></h1>   //Copy paste tag 
+</div>
+
+//Add extra div for dynamic list of items
+
+<div class="box" id="heading">	
+	<li> <%newListItem %></li>	
+</div>
+<div class="box">
+	 < %for(let i=0; i<newListItems.length; i++) { %>							//Loop through
+	<div class="item">
+		<input type="checkbox" >
+		  <p><%= newListItems[i] %></p>
+</div>
+
+<% } %>
+
+<form class="item" action="/" method="post">	//posts info inside form  to server at home route
+    <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+    <button type="submit" name="button"> + </button>
+</form>
+
+</div>	
+
+
+	//Unordered list with list of items
+
+
+
+  </body>
+</html>	
+____________________________________________________________________________________________________________
+
+
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+var items = ["Buy Food", "cook Food", "Eat Food"];
+
+app.set('view engine', 'ejs');		//tells app to use ejs as view engine
+	
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));		*******		
+		
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric"}
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ 
+
+	var today = new Date();
+
+	var options = {
+	 weekday: "long",
+	 day: "numeric",
+	 month: "long"
+	};
+
+	//pass and use object to render date
+	var day= today.toLocaleDateString("en-US", options);		//Date formatted
+	})			
+	res.render("list", { kindOfDay: day, newListItems: item});		//remember to Add new list item in app.get  //give both variables that we wanna render
+});
+//HANDLE POST REQUEST TO A PARTICULAR ROUTE 	//Home Route
+app.post("/", function(req, res)) {			//Trigger callback with request and response
+  
+  <input type="text" name="newItem">		//Grab value inside text box "newItem"
+	var item = req.body.newItem					//How to grab value	//remember to setup body parser b4 using body
+  	console.log(item);						//declare item on top globally
+	
+	items.push(item);
+	res.render("/");
+}
+app.listen(3000, function(){
+	  console.log("Server started on port 3000");
+})
+___________________________________________________________
+TEST:
+Save
+Refresh -> CSS applied
+
+After moving form into div
+our TodoList is styled

@@ -1,0 +1,55 @@
+How to render html file differently depnding on value of variable
+Change color(html) in ejs
+Try to print title of page  list.ejs
+
+1) Write JS for changing color
+List.ejs
+
+     <!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+if(kindOfDay == "Saturday" || kindOfDay === "Sunday") {
+	<h1 style="color: purple"><%= kindOfDay %>ToDoList</h1>
+} else {
+	<h1 style="color: blue"><%= kindOfDay %>ToDoList</h1>
+}	
+  </body>
+</html>	
+
+2) EJS Docs ->Different tags .//we use scriptlet tags to run js code(control flow)
+   1)	we used <%=	//Output value of what goes inside tag into template
+					        //dayofwek		h1	
+   2)   Scriptlet tags
+	                      <%	//cannot write any JS, Can use control flow
+				Can render different html depending on value passed in
+				//DONT ADD WHERE HTML
+				//Works on line by line basis
+list.ejs
+
+  <!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+      <%	if(kindOfDay == "Saturday" || kindOfDay === "Sunday") {   %>
+	<h1 style="color: purple"><%= kindOfDay %>ToDoList</h1>
+<% } else {
+	<h1 style="color: blue"><%= kindOfDay %>ToDoList</h1>
+} %>	
+  </body>
+</html>	
+
+
+
+NOTE: Usually logic is inside server	
+	should not be too much logic in content file
+
+

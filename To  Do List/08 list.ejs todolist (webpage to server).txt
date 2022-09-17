@@ -1,0 +1,112 @@
+1) Render webpage with bullet points
+list.ejs
+
+  <!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+ <h1> <%= kindOfDay %></h1>     
+	//Unordered list with list of items
+<ul>
+	<li>Buy Food</li>
+	<li>cook Food</li>
+	<li>Eat Food</li>
+</ul>
+
+
+  </body>
+</html>	
+
+
+2) Add new items to list
+	Pass data back from webpage to server
+		Create new form in list.ejs
+		Give single text input to form (to-do-list item)
+		On click Submit -> make post request to home route
+
+  <!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>jTo Do List</title>
+    <<link rel="stylesheet" href="/css/styles.css">>
+  </head>
+  <body>
+ <h1> <%= kindOfDay %></h1>     
+	//Unordered list with list of items
+<ul>
+	<li>Buy Food</li>
+	<li>cook Food</li>
+	<li>Eat Food</li>
+</ul>
+
+<form class="" action="/" method="post">	//posts info inside form  to server at home route
+
+  <input type="text" name="newItem">
+  <button type="submit" name="button"> Add </button>
+</form>
+
+  </body>
+</html>	
+-----------------------
+Test
+type input -> Add
+ Cannot POST/	//cannot post to home route
+
+Why? No code in our server to handle post request
+---------------------------------------------------------
+3) Handle post request in App.js
+app.js
+
+const express = require("express");	//packages
+const bodyParser = require("body-parser");	//packages
+
+const app = express();		//create our app
+
+app.set('view engine', 'ejs');		//tells app to use ejs as view engine
+	
+app.use(bodyParser.urlencoded({extended: true}));
+				
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric"}
+app.get("/", function(req,res){	//Create get route on home	//Sends browser hello when user tries to access home route
+ 
+
+	var today = new Date();
+
+	var options = {
+	 weekday: "long",
+	 day: "numeric",
+	 month: "long"
+	};
+
+	//pass and use object to render date
+	var day= today.toLocaleDateString("en-US", options);		//Date formatted
+	})			
+			
+res.render("list", {
+	kindOfDay: day
+})
+//HANDLE POST REQUEST TO A PARTICULAR ROUTE 	//Home Route
+app.post("/", function(req, res)) {			//Trigger callback with request and response
+  
+  <input type="text" name="newItem">		//Grab value inside text box "newItem"
+	var item = req.body.newItem					//How to grab value	//remember to setup body parser b4 using body
+  	console.log(item);
+}
+app.listen(3000, function(){
+	  console.log("Server started on port 3000");
+})
+
+
+//What flow here? submit btn -> post request to home rroute by form -> post value of text input "newItem" -> request received and caught in app.post
+ -> tap into request -> look through body ->search for value newItem -> log out value
+
+TEST
+1) localhost:3000
+2) add new item Angela needs to eat -> click add
+3) terminal
+	Angela needs to eat

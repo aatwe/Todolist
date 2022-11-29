@@ -1,0 +1,6 @@
+Add new items in list
+delte items
+look at all items in list
+
+
+How to have multiple lists?

@@ -1,0 +1,14 @@
+for ex localhost:3000/Home	//Create brand new page without having to define get and post routes
+
+
+1) how to create multiple lists? Express Route Parameters
+	Create dynamic routes using Route parameters
+
+2) Delete app.js -> get route /work
+
+	app.get("/work", function(req,res){
+	  res.render("list", {listTitle: "work List" , newListItems: workItems});
+})
+
+3) Create dynamic route based on route parameters
+		//print localhost:3000/Work	//last part print in app.get

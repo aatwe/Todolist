@@ -1,0 +1,124 @@
+Todolist-v2-starting-files -> Atom
+
+>cd folder	
+>npm i	//package .json dependencies : body parser,ejs,express
+_______________________________________________________________________
+App.js
+//
+1)store default objects in items
+2) When post new items on app.js -> items pushed into items/workItems array
+3) Delete these arrays and use mongo  / mongoose instead 
+	npm i mongoose -> adds to package.json
+  	const mongoose
+	create new db in mongo db
+	how to connect?	mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true});	//Where mongoDb is hosted
+									//Avoid deprication warning
+	Create new items schema
+		const <schemaName> = {
+ 		<fieldName> : <FieldDataType>,
+
+	Create mongoose model based on schema	, pass 2 arguments a) Item collection(singular)	b) itemsSchema(Schema  used to create items collection)
+		const = mongoose.model(
+			<"SingularCollectionName">,
+			<SchemaName>
+	Remove day and getdate	//Render default list with title Today
+	Instead of array pass items in items collection
+	
+	Create 3 new mongoose document
+	const <constantName> = new <ModelName> ({
+ 	 <fieldName>: <fieldData>,
+	
+	Put 3 documents in array
+	Insert all3 items in one go in items colleciton (how using insertmany())
+	Docs -> API -> Models -> Model.insertMany()
+}
+4) Mongod
+5) MongoShell
+   node app.js
+
+6) Check DB
+	show dbs
+	 //todolistDB
+	use todolistDB
+	show collections	
+	items
+	db.items.find()
+	// 3 documents
+		{"_id" : ObjectId("xxxx"), "name" : "Welcome to todolist!" , "__v" : 0}
+		{"_id" : ObjectId("xxxx"), "name" : "Welcome to todolist!" , "__v" : 0}
+		{"_id" : ObjectId("xxxx"), "name" : "Welcome to todolist!" , "__v" : 0}
+)
+}
+	
+--------------------------------------------
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+//remove to simplify //const date = require(__dirname + "date.js");
+
+//Delete const bodyParser = require("body-parser");	
+//Deleteconst date = require(__dirname + "/date.js");
+
+const app = express();
+
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+
+//Schema
+const itemsSchema = {
+ 			name : String
+};
+//Model
+const Item = mongoose.model("Item")
+
+//Create 3 new documents : dfault item in todolist
+//document 1
+const item1 = new Item({
+ name:"Welcome to your Todolist"
+})
+//document 2
+const item2 = new Item({
+ name:"Hit + button to add a new item"
+})
+//document 3
+const item3 = new Item({
+ name:"Hit to delete an item"
+})
+
+const defaultItems = [item1, item2, item3];
+	//Create new document from item model
+
+
+//Insert 3 documents to array
+Items.insertMany(defaultItems, function(err){
+ if(err) {
+    console.log();
+}
+    else{
+    console.log("Successfully saved default items to database");
+}
+})
+
+//Array of default objects
+//Delete //const items = ["Buy Food", "Cook Food", "Eat Food"];
+//Delete //const workItems = [];
+
+app.get("/", function(req,res){
+ //remove const day = date.getDate();	//we will render default list with title today
+  
+res.render("list", "list", {listTitle: day, newListItems: items});
+});
+	
+app.post("/", function(req,res){
+ const item = req.body.newItem;
+
+ if(req.body.list == "Work") {
+ workItems.push(item);
+ res.redirect("/work");
+} else {
+  items.push(item);
+  res.redirect("/");
+}
+})

@@ -1,0 +1,95 @@
+What we did? Used route parameters provided by express
+	   Why use route parameters?	to create new list
+
+localhost:3000/Orange 	//Creates a list called orange
+
+
+1) What doesnt work? addign new item in list	//Adds to default list
+2) Why? whenever we click submit button
+
+in list.ejs ->
+<form class="item" action="/" method="post">
+  <input type>="text" name="newItem" placeholder="New Item" autocomplete="off"
+  <button type="submit" name="list">+</button>
+</form>
+
+3) //No matter which list we are in, we are always posting in root route
+in app.js
+//Create new item
+app.post("/", function(req, res){
+  
+  const itemName = req.body.newItem;
+  cons item = new Item({
+      name: itemName
+})
+//Save item to DB
+item.save();
+//Redirect to root route
+res.redirect("/");
+});
+
+4) Also we are using the same template everywhere
+	All lists dynamically rendered
+	Figure out how to handle this inside root route for post request
+	What is happening in app.post()?
+	1) new item created
+	2) item saved to db
+	3) redirect to root route	//thats why redirected to root route
+Solution
+	1) when form submit -> get access to new item and the list. Why get access? to use both item name and list name in app.js
+				pass current list that is displayed
+	2) grab list title How? add a value in form
+		<form class="item" action="/" method="post">
+ 	 <input type>="text" name="newItem" placeholder="New Item" autocomplete="off"
+	  <button type="submit" name="list" value="<%= listTitle%>">+</button>
+	</form>
+	//Get access to newItem and list
+
+	3) Use the item name and list name in app.js
+	    Check if listname that triggered post request == today
+			Save the list to item collection and redirect to home
+	   If list is != today	
+			Search for the list document in list collection in DB
+			Add item &  embed in existing array if items
+			How? List.findOne()	//parameter : condition + callback with err and foundList
+			Tap into embedded array of items how? foundList.items
+			Push new item into array How? foundList.items.push(item)	//which item? which we just created
+			Save the found list (Update with new data)
+			Redirect to the route where user came from
+	4) Summary:
+		no matter whichever list in
+		when we add input in text field + Submit button
+		Form makes post request -> through root route
+		Server catches request -> 
+		check if list is from default "Today list -> save item and redirect to root route
+		if input from custom list  -> find the custom list + add new item to custom list
+		Redirect to list name (app.get("/:customListName"))	/
+		render all items in that list
+	5) Test
+		localhost:3000/Home
+		   Add new item -> Clean Kitchen +		//Saved in Home list
+		localhost:3000/Work
+		   Add new item -> Read Emails+ 		//Saved on Work list
+	
+		
+		
+
+------------------------------------------------
+	app.post("/", function(req,res){
+	const itemName = req.body.newItem;
+	const listName = req.body.list;
+
+	  cons item = new Item({
+	      name: itemName
+	})
+	if(listName === "Today"){
+	  item.save();
+	  res.redirect("/");
+}	else {
+	List.findOne({name: listName}, function(err, foundList)) {
+		foundList.items.push(item);
+		foundList.save();
+		res.redirect("/" + listName)		
+}
+}
+	

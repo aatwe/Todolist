@@ -1,0 +1,13 @@
+TodoList
+1) EJS Template
+2) Pass data bw server and ejs files
+
+__________________________________________
+What issue to tackle
+	1) we add new item Test 	-> on refresh item still there
+	2) But if we restart our server 
+		rs	//restart nodemon server //node app.js
+	3) Item added wiped out  (not stored)
+
+Objective : Try to persist this data using Mongo DB
+	

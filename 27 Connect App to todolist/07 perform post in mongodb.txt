@@ -1,0 +1,34 @@
+//General flow -> list.ejs ->trigger form to post to root route ->caught in app.post -> grab item user posted
+	//Do the same in mongo DB
+
+
+//res.render("list", "list", {listTitle: day, newListItems: items});		//Remember we deleted items array, instead we wanna pass foundItems
+});							//Also move res.render into callback
+	
+app.post("/", function(req,res){
+  
+const itemName =  req.body.newItem;
+				//when post route is triggered can tap into req.body.newItem -> Refers to text in form input
+				//General flow -> list.ejs -> trigger form to post to root route -> trigger form to post to root route ->caught in app.post -> grab item user posted
+				//Do the same in mongo DB	
+
+//Create new item document based on model in mongodb
+
+const item = new Item ({
+ name: itemName
+});
+
+ item.save();	//mongoose shortcut
+res.redirect("/")	//redirect back to home route	//remember to add or wont show on webpage
+});		//item.save -> go to home route -> app.get("/") -> Item.find() //find all items in items collection -> render them on screen
+
+
+______________
+Test:
+add 4th new item -> +
+show dbs
+use TodoListDB
+DB.item.find()
+//we get 4 items in database	//successfully saved in items collection
+
+//Why not showing on webpage?  remember to add res.redirect

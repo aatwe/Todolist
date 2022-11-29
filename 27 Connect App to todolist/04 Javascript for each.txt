@@ -1,0 +1,38 @@
+in JS every array has access to foreach
+can tap into every single items in array
+use them in call back function
+
+<array>.forEach(function(<singleArrayItem>){
+	// Use each singleArrayite m
+})
+
+
+Ex
+in list.ejs we have access to newListItems 
+	//corresponds to all founditems in app.js root route
+
+Item.find({}, function(err, foundItems){
+	res.render("list", "list", {listTitle: "Today", newListItems: foundItems});  
+	console.log(founditems);
+})
+---------------------------------------------
+list.ejs
+//Move into for each loop instead//since ejs use anglebrackets
+
+<% newListItems.forEach(function(item){ %>
+		<div class= "item">
+		  <input type= "checkbox">
+		<p><%= newListItems[i].name  %> </p>
+	<%	</div>   %>
+	})
+
+
+<form class= "item" action="/" method="post">
+<input type="text" name="newItem" placeholder="New Item" autocomplete	="off"
+ <button type="submit" name="list">+</button>
+</form>
+</div>
+---------------------
+Output 
+Same todolist item titles
+

@@ -1,0 +1,134 @@
+1) Solution 1 -> comment out insert many after 1st run
+2) Solution 2 -> if user accesses root route -> check if items collection is empty
+					if yes Item.insertMany(defaultItems, function(err)
+					if no add another set 
+						const defaultItems = [item1, item2 , item3]
+
+//Drop the database
+db.dropDatabase()	//todolistDB
+========================================================================		
+Item.insertMany(defaultItems, function(err){
+ if(err) {
+   console.log(err);
+} else {
+   console.log
+}
+
+})
+
+paste in Item.find with condition
+
+================================
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+//remove to simplify //const date = require(__dirname + "date.js");
+
+//Delete const bodyParser = require("body-parser");	
+//Deleteconst date = require(__dirname + "/date.js");
+
+const app = express();
+
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+
+//Schema
+const itemsSchema = {
+ 			name : String
+};
+//Model
+const Item = mongoose.model("Item")
+
+//Create 3 new documents : dfault item in todolist
+//document 1
+const item1 = new Item({
+ name:"Welcome to your Todolist"
+})
+//document 2
+const item2 = new Item({
+ name:"Hit + button to add a new item"
+})
+//document 3
+const item3 = new Item({
+ name:"Hit to delete an item"
+})
+
+const defaultItems = [item1, item2, item3];
+	//Create new document from item model
+
+********************************************************
+
+********************************************************
+/*	//comment out this entire				//Test: No items in app
+//Insert 3 documents to array
+Items.insertMany(defaultItems, function(err){
+ if(err) {
+    console.log();
+}
+    else{
+    console.log("Successfully saved default items to database");
+}
+})
+*/
+*************************************************************
+//Array of default objects
+//Delete //const items = ["Buy Food", "Cook Food", "Eat Food"];
+//Delete //const workItems = [];
+
+app.get("/", function(req,res){
+ //remove const day = date.getDate();	//we will render default list with title today
+-------------------------------------------------------------------------------------------
+//no condition -> want to find everything inside item collection
+//where will we store found items? founditems
+//when will this trigger? when we access home page/ root route 
+Item.find({}, function(err, foundItems){
+	console.log(founditems);				*Log your items here	//get an empty array ([])
+							//How to check if collection of items is empty
+	if (foundItems.length === 0) {			//Checks if any items in items collection
+	  //Insert 3 documents to array			//Paste insertMany
+	Items.insertMany(defaultItems, function(err){		//if none Creates 3 items and then add to items collection 
+	 if(err) {
+	    console.log(err);					
+	}
+	    else{
+	    console.log("Successfully saved default items to database");
+	}});	
+	    res.redirect("/");					//redirect back to root route //app.get("/")			
+						 	//then it wont go to if, will go to else block
+}	
+else {
+	res.render("list", "list", {listTitle: "Today", newListItems: foundItems});  	//Render items to  list.ejs
+}	
+})
+			
+-------------------------------------------------------------------------------------------
+//res.render("list", "list", {listTitle: day, newListItems: items});		//Remember we deleted items array, instead we wanna pass foundItems
+});							//Also move res.render into callback
+	
+app.post("/", function(req,res){
+ const item = req.body.newItem;
+
+ if(req.body.list == "Work") {
+ workItems.push(item);
+ res.redirect("/work");
+} else {
+  items.push(item);
+  res.redirect("/");
+}
+})
+
+
+
+
+*************************************
+Testing
+no items in items.collection
+refresh
+Console -> Successfully saved items to DB
+Items not showing on browser	//why we are not rendering after checking + inserting 3 new items
+			   add res.redirect("/"); in if statement
+Refresh again
+Default 3 items will show on website	
+Refresh again -> shows only 3 items	

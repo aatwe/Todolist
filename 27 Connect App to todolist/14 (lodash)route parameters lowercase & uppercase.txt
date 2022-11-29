@@ -1,0 +1,50 @@
+  localhost:3000/Home and localhost:3000/home
+different lists
+
+ How to solve
+1) change what input in customListname
+2) npm i lodash
+	docs -> lodash -> String
+	_.capitalize([string=''])	//Converts first character of string to upper case and remaining to lowercase
+
+	for ex
+	_.capitalize('FRED');
+	//=> 'Fred'
+
+3) add lodash to app.js
+	const _ = require("lodash");
+	//Where to add? in customListName route
+	app.get("/:customListName", function(req,res){
+	  //const customListName= req.params.customListName;// earlier
+	    const customListName= .capitalize(req.params.customListName);
+	
+	List.findOne({name: customListName}, function(err, foundList) {
+	  if(!err) {
+	    if(!foundlist) {
+	 	const list = new List({
+		  name: customListName,
+		  items: defaultItems
+});
+		list.save();			
+		res.redirect("/" + customListName);
+}		else {
+		res.render("list", {listTitle: foundList.name, newListItems: foundList.items  })
+}
+}
+})
+})
+
+4) Save -> restart server(nodemon app.js)
+
+5) drop current collection
+	db.list.find()	//we have upper case and lowercase home
+	db.list.drop()
+	db.list.find()
+
+6) Test
+	localhost:3000/work -> add items
+	localhost:3000/Work	// still see same list
+
+
+WE HAVE LEARNT HOW TO ADD DATABSE TO NODE JS APP 
+PERMENENTLY STORE USER DATA

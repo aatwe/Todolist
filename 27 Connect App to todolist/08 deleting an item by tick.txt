@@ -1,0 +1,128 @@
+where to delete item from? items collection
+What objective?
+send some data when checkbox clicked
+What needed? form and post route
+____________________________________________________________________________________________
+What we have?
+____________________________________________________________________________________________
+list.ejs
+//Move into for each loop instead//since ejs use anglebrackets
+
+<% newListItems.forEach(function(item){ %>
+		<div class= "item">
+		  <input type= "checkbox">		
+		<p><%= newListItems[i].name  %> </p>
+	<%	</div>   %>
+	})
+
+
+<form class= "item" action="/" method="post">
+<input type="text" name="newItem" placeholder="New Item" autocomplete	="off"
+ <button type="submit" name="list">+</button>
+</form>
+</div>
+____________________________________________________________________________________________
+Flow:
+1) Add form	//styling looks different, why? styles.css html form is targetted -> form.item
+2) Create Post route for deleting items
+3) Add post route for /delete to app.js
+4) //Check What sent from form for /delete routes
+5) test
+	tick an item -> Check console -> nothing happens why? earlier we used submit button for user input
+				//this button submits all data in form and make post request to required route
+				//no way of submitting here
+				//find way for form to submit once checkbox tick
+					Solution: onChange= this.form.submit()"	//add little JS code to submit form
+6) Find way to access input
+	earlier we gave name newItem, 
+		Why give name?
+			we could tap into request.body
+	<input type="text" name="newItem" placeholder="New Item" autocomplete	="off"
+	
+	Similarly
+		Give checkbox input name = "checkbox"
+
+7) Test again
+	Click on checkbox
+	check console ->	{ checkbox: 'on'}
+8) Try to get item name that we checked off in console
+	since many checkboxes
+	assign value to each checkbox based on item id
+			
+		Can submit this form and find which item was checked off 
+	add atttribute	
+		value="<%= item._id %>"
+
+9) Test again
+	check off an item
+	see console
+		5bc9bf53ca.....	We found id of that item
+10) Delete the item with that id
+	const checkedItemId = req.body.checkbox;
+	
+	10a) We will use
+	 Mongoose: findByIdAndRemove()		
+	Inside app.post("/delete"...)	
+	   <ModelName>.findByIdAndRemove(<Id>, function(err){	//Note callback is necessary check documentation
+	//Handle any error or log success
+	})
+	10b) Tap into items collection
+	Item.findByIdAndRemove(checkedItemId, function(err){
+	  if(!err) {
+	   console.log("Successfully deleted")
+}
+	  else{
+	  console.log(err)
+}
+})
+
+11) node app.js
+	Sucessfully deleted
+	How to check?  db.items.find() => item does not exist in items collection
+	How to make it reflect on webpage?  res.redirect("/"); to home route after deleting
+	in app.get() finds item still in collection and renders on page
+_____________________________________________________________________________________________
+list.ejs
+//Route /delete for deleting checked items
+<% newListItems.forEach(function(item){ %>
+<form action="/delete" method="post">
+		<div class= "item">
+		  <input type= "checkbox" name= "Checkbox" 	value="<%= item._id %>" onChange="this.form.submit()" >	find id for checkbox				//submit form on checkbox tick	
+		<p><%= newListItems[i].name  %> </p>								//submit form to make post request to delete route
+	<%	</div>   %>
+
+</form> 
+	})
+
+//Route / for adding new items
+<form class= "item" action="/" method="post">
+<input type="text" name="newItem" placeholder="New Item" autocomplete	="off"
+ <button type="submit" name="list">+</button>
+</form>
+</div>
+________________________________________________________________________________________________
+app.js
+
+1) app.post("/", function(req,res)) {
+ const itemName = req.body.newItem;	//User typed new item sent from form to this route via req.body
+ const item = new Item ({
+  name: itemName
+});
+
+item.save();
+res.redirect("/")
+});
+//add new route
+
+2) app.post("/delete", function(req, res){
+  //console.log(req.body.checkbox);		//Check What sent from form for /delete route	//*On 2nd test prints checkbox: 'on'
+    const checkedItemId = req.body.checkbox;	//bind to variable after getting id
+
+    Item.findByIdAndRemove(checkedItemId, function(err){		//Note callback is necessary check documentation
+	  if(!err) {
+	   console.log(Successfully deleted")
+	   res.redirect("/"); 
+
+}
+
+})					/./after naming can tap into checkbox 		//prints just 	'on'

@@ -1,0 +1,132 @@
+What is done
+1) Can access default list on homepage
+2) Add new items to DB
+3) Delete items from DB
+4) Create custom lists for ex localhost:3000/Shopping  
+		add item they stay in that list
+
+DELETE ITEMS IN CUSTOM LIST
+
+1) list.ejs
+How are we deleting?
+//form makes post request to /delete route -> pass which item id to delete -> trigger when checkbox clicked
+<form action="/delete" method="post">
+ <div class="item">
+   <input type="checkbox" name ="checkbox" value="<%=item._id%>" onChange="this.form.submit()">
+ <p><%=item.name%></p>
+</div>
+/?Why no submit button in above form(to put in list item and pass)?
+	Checkbox is only input, Checkbox already has value
+In html there is ->
+		<input type ="hidden">	
+			What is it used for? includes data that cant be seen by users when form is submitted
+		Use this to pass list name
+		How to pass list name? pass input in the form  with type="hidden"
+--------------------------------------------------------------------------------------------------------------------------------
+//form makes post request to /delete route -> pass which item id to delete -> trigger when checkbox clicked
+<form action="/delete" method="post">
+ <div class="item">
+   <input type="checkbox" name ="checkbox" value="<%=item._id%>" onChange="this.form.submit()">
+ <p><%=item.name%></p>
+</div>
+<input type="hidden" name="listName" value="<%= listTitle %>">
+</input>
+</form>
+<% }) %>
+-----------------------------------------------------------------------------------------------------------------------------------
+What are we looking for in /delete route? item only, not checking which list item from
+How to delete from correct list?
+   Find which list is item from? how to find which list item from?
+	know: 1) what is id of checked item
+	           2) which list item came from	
+
+app.post("/delete", function(req,res){
+  const checkedItemId = req.body.checkbox;
+ 
+ Item.findByIdAndRemove(checkedItemId, function(err){
+   if(!err) {
+     console.log("Successfully deleted checked item");
+    res.redirect("/");
+}
+} )
+})
+_--------------------------------------------------------------------------------------------------
+2) once passed listTitle from form using hidden method
+In App.js check what is the value of list name
+
+app.post("/delete", function(req,res){
+  const checkedItemId = req.body.checkbox;
+  const  listName = req.body.listName ;		//Accesse list name we foudn from form
+
+ Item.findByIdAndRemove(checkedItemId, function(err){
+   if(!err) {
+     console.log("Successfully deleted checked item");
+    res.redirect("/");
+}
+} )
+})
+----------------------------------------------------------------------------------------------------
+3)  a)  Check if item is deleted fromd efault list/customlist
+	if custom list -> find list document with listName
+			Update that list(array of items) and remove checked item with id
+
+app.post("/delete", function(req,res){
+  const checkedItemId = req.body.checkbox;
+  const  listName = req.body.listName ;		//Accesse list name we foudn from form
+
+if(listName === "Today"){
+  Item.findByIdAndRemove(checkedItemId, function(err){
+   if(!err) {
+     console.log("Successfully deleted checked item");
+    res.redirect("/");
+}
+});
+}  else   {
+	b) //How to remove that item? $pull or $pullall	+ mongoose findOneandUpdate
+		operator removes from existing array all instance of values matching a given condition
+
+{ $pull : {<field>: <value|condition>,<field2>: <value|condition>, ... }}
+ We need both mongoose and  js method ($ operators are mongoDB)
+}
+	c) Mongoose findOneAndUpdate() and using $pull operator
+	   {conditions},	//Query what to find
+	   {updates},	//What to update
+	   function(err, results){}  result callback
+	----------------------------------------------
+)	Mongoose findOneAndUpdate()
+	   {conditions},	//Query what to find
+	   {$pull: {field: {_id: value}},	//What to update   //field?where to pull from(array ofitems)	//value = which item in array of items to pull
+				//How will we find item through array? id/name 
+	   function(err, results){}  result callback
+	----------------------------------------------
+Ex
+	a)Check if list is not default list
+	b)tap into list model and findOneAndUpdate	
+	c) specify which list to find, what update to make, callback with found list
+	d) we have found the list and updated it -> redirect to custom list path
+
+app.post("/delete", function(req,res){
+  const checkedItemId = req.body.checkbox;
+  const  listName = req.body.listName ;		//Accesse list name we foudn from form
+
+if(listName === "Today"){
+  Item.findByIdAndRemove(checkedItemId, function(err){
+   if(!err) {
+     console.log("Successfully deleted checked item");
+    res.redirect("/");
+}
+});
+}  else   {
+	List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId }, function(err, foundList)   }})
+	if(!err) {
+	 res.redirect("/" + listName);
+}
+}
+
+-----------------
+Testing
+1) refresh
+2) tick -> delete the item redirect to same page
+3) create custom list: wishlist
+4) add new item "Tesla"
+5) delete that item

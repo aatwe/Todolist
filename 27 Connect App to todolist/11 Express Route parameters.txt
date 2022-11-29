@@ -1,0 +1,139 @@
+1) Get access to name of new list from browser
+ 	Create dynamic route based on route parameters
+		//print localhost:3000/Work	//last part print in app.get
+
+2) use name to create new document with different schema than item
+	What Every new list has
+		name, array of item documents associated
+
+What?
+
+How to use?	Colon + Param name in app.get
+	Where will user typed value go?inside callback? Access req.params.paramName 	
+
+
+app.get("/category/:<paramName>", function(req,res){
+	//Access  req.params.paramName
+});
+
+3) Create mongoose model from schema ( with singular version of collection )
+	const List = mongoose.model("List", listSchema);
+
+4) Create documents based off model when user tries to access the custom list name
+	start off with same 2 items default list
+	save list into collection
+5) test:
+	localhost3000/home
+		mongoshell
+		 show collections	: items, lists
+		 db.lists.find()
+			{"_id": ObjectId("xxxx"), "name" : "Home" :
+			[{"_id" : ObjectId("xsdasda"), "name" : "Welcome yo your todolist!"}, {"_id" : ObjectId("asdfasd"), "name": "Hit the + button to add new item"}......}]}	
+
+6)Dont create new list everytime 
+    User will access localhost:3000/Home
+    Will create a new list with name home
+	But we dont want to create again and again 
+		How to check? db.lists.find() --> we have 2 lists both called home
+	so check if list exists
+		if yes -> display
+		if no ->  create new using default items
+  Use Mongoose findOne() method 
+
+7) List.findOne({name: customListName}, function(err, foundList){
+	localhost:3000/Home
+	exists
+	localhost:3000/sdfdsdf
+	doesnt exist
+	res.render("list", {listTitle: foundList.name, newListItems: foundList.Items})
+
+8) Test again
+    localhost:3000/Home	//Home list opens
+    localhost:3000/Work	// wasnt there, list got created(Check mongoshell -> lots of data created
+			     Check last document added : name, 
+// How to clear a particular collection)
+   todolistDB
+   show collections
+	items   lists
+   db.lists.drop()
+	Check -> show collections
+  db.lists.find() 	//See single document with name Home 
+
+//Try to enter work document again
+ localhost:3000/Work  -> Wont show up though
+  db.lists.find()	//we have 2 documents Home and Work
+Why document not showing in webpage?
+after list.save() we are not redirecting to current route
+
+->
+list.save();
+		//To make list show on webpage
+res.redirect("/" + customListName);	//will redirect to that route, after going on route we can see the list 
+_________________________________________________________________________________________________________________________________________________________________________________________________
+Ex
+1) 
+app.get("/"){}
+app.get("/:customListName", function(req, res){
+ //  console.log(req.params.customListName);
+     const customListNamereq.params.customListName;	//store name of new list from browser
+
+})
+
+TEST:
+browser: localhost:3000/Home
+Home //logged in console
+
+browser: localhost:3000/Work
+
+2) //Create new schema
+const listSchema = {
+  name: String,
+  items: [itemsSchema]	//array of items based on itemsSchema
+};
+Work //logged in console
+
+3) Create mongoose model
+const List = mongoose.model("List", listSchema);
+
+
+4) app.get("/"){}
+app.get("/:customListName", function(req, res){
+ //  console.log(req.params.customListName);
+    const customListNamereq.params.customListName;	//store name of new list from browser
+//Create new list based off new model
+    const list = new List({
+	name: customListName,
+	items: defaultItems  				// default items array of 3  list items	
+})
+
+list.save();
+})
+
+6) 
+app.get("/"){}
+app.get("/:customListName", function(req, res){
+   const customListName = req.params.customListName
+   List.findOne({name: customListName}, function(err, foundList){
+     if(!err){
+      if(!foundList) {
+ 	console.log("Doesnt exist!")
+	//Create a new list
+	//Create new list based off new model
+  	  const list = new List({
+		name: customListName,
+		items: defaultItems  				// default items array of 3  list items	
+})
+
+list.save();
+		//To make list show on webpage
+res.redirect("/" + customListName);
+}    else {
+	console.log("Exists")
+	//show existing list
+	res.render("list", {listTitle: foundList.name, newListItems: foundList.Items})
+}
+}
+})
+
+
+})

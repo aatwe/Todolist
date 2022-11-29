@@ -1,3 +1,3 @@
 # Todolist
-Simple TodoList App using EJS.Note: The final code is not yet uploaded , this is more of a walkthrough.
+Walkthrough over a Simple TodoList App using EJS. Upgraded to Google Keep clone in other project
 https://todolist-with-mdb.herokuapp.com/

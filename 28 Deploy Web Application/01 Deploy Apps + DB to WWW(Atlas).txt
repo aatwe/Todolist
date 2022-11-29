@@ -1,0 +1,26 @@
+Free up your App
+1) How do we access website right now?
+	http://localhost:3000
+	//what is node js app server? local computer
+	//What is http? rules for data transfer on internet for accessing webpages
+2) Where is data stored?
+	mongodb://localhost:27017
+	//what is db server? local computer 
+	//what is mongodb here? mongodb rules for determining how we access data in mongodb database
+
+3) Can anyone else access our website?NO
+
+
+4) How did we host our node js app server? heroku
+
+5) How to host our DB?
+	Server should be online 24/7 if anyone requests
+	ISP rules on our local workstation restrict
+
+Figure out how to host mongoDB database on  a sever
+ATLAS  
+1) https://yourapp.herokuapp.com/
+2) mongodb://cluster0.mongodb.net:27017
+
+With atlas no need to host server/db locally
+Free up your app

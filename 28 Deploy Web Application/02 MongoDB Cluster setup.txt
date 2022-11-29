@@ -1,0 +1,85 @@
+Why use MongoDB atlas and not AWS direct? No payment	//Can scale later
+
+MongoDB -> Get MongoDB -> Sign up ->Get started
+
+
+1) Cloud Provider for MongoDB Cluster : AWS / Google (Free tier)
+	Region => free tier
+
+2) Cluster Tier
+	M0
+	Check RAM + Storage
+	Free
+
+ 	Create cluster(7-10 min on AWS backend )
+
+3) Security -> Add user(These users can communicate with DB on Atlas)	
+		admin-angela
+		password
+
+	User privelage -> Atlas Admin
+ś
+	Add IP Address 	//allow access from anywhere -> Confirm
+	Connect to cluster -> Connect to MongoShell
+	//Find your version of Mongoshell
+		hypterminal
+		mongo --version	
+		v4.0.2	
+	Choose short SRV connection string (shell 3.6+)
+4) Get URL to connect to MongoDB server
+	//mongo "mongodb+srv://cluster0-5hue1.mongodb.net/test" --username admin-angela
+
+    CLI
+	a) mongo "// paste URL here//"
+	b) enter that password	//if dont remember Security -> password change
+	//Linking to mongoDB server on ATLAS
+
+5) ACTIVE SESSION RUNNING ON ATLAS CLUSTER FROM MONGODB SHELL
+	//if shell and server version dont match 	//issaok 
+	
+6) Test (Connect to cluster from Mongo Shell
+
+  6a) Create Database and collection
+	show dbs		//mongo commands will work
+	Cluster -> Collections ->  Create a new DB
+	DB:		test
+	collection Name:    test
+  6b) Insert document in test collection in test dataabse(new data)
+	_id:ObjectId{"xxxxx"}
+	newData: "Welcome to Your Database"
+	 Insert
+ 
+Test again:
+	show dbs
+	test	0.00
+	use test
+	show collections
+	db.test.find()
+
+7) Connect to Cluster from Application	
+	How did we earler connect our app to local mongoDB db?
+	    a) mongod	//starts mongodb server at port 27017 in local system
+	    b) nodemon app.js	//run app
+	    c) go to localhost:3000/ and see ToDolist
+
+	    d) Ctrl + C :Shut down mongoDB server on local host
+	    e) rs	//restart server	//error	//cant connect to server
+	    
+	How to connect app to cluster?
+	   a) CONNECT
+	   b) Connect your application
+	   c) SRV connection	(using latest version of MongoDB)
+	   d) Copy SRV Address
+	   e) App.js
+		connect("/*Paste SRV Address here(Replace <password> with pw we created)(remove test db from url) */TodolistDB", {useNewUrlParser: true});
+	   f) Save -> rs		//no error
+	   g) localhost:3000		//todolist runs with DB in cloud
+		try adding new item
+		mongDB Cluster -> Collections-> todoListDB
+						-> items collection
+							-> default items
+							-> new items
+						-> lists collection
+							-> default items
+							-> new items
+	

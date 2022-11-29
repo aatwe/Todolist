@@ -1,0 +1,76 @@
+we created cluster on atlas
+node js talked with cluster and saved data with todolistDB
+
+
+How to deploy our Todolist App on Heroku(get anywhere on internet)
+
+1) Signup -> Dashboard	
+	NodeJS-> heroku documentation 	(I have already installed Heroku CLI)
+
+2) track Codebase on git repository
+	git init
+	git add .	//add everything in repo to staging area
+	git commit -m "initial Commit"
+	
+3) Install heroku CLI
+	heroku login	
+	Email;	
+	Password:
+
+4) Add Heroku Git Remote	
+	heroku create
+	
+5) Add a procfile
+	touch Procfile	
+	open Procfile -a Atom
+	web: node app.js	//tells its web application with entry point app.js
+	
+6) Listen to the correct port
+	app.listen(process/env/PORT);
+	or
+	//Use our port	//add in App.js 
+	let port = process.env.PORT;	
+	if(port == null || port = ""){
+	  port = 3000;
+}
+	app.listen(port);
+	app.listen(port,function() {
+		console.log("Server started on port 3000")
+})	
+	
+
+7) heroku -> deploying nodejs
+	//Add node-js to package.json
+	package-json
+		 {
+		  "engines": {
+		 "node": "8.12.0"
+		}
+		}
+	//What node --version find and paste above
+
+8) Create git ignore file	
+	where are all our dependencies? node_modules
+	Dont want to upload all -> heroku reads inside dependencies 
+				heroku rebuilds on their server
+	Add Git ignore for heroku to ignore
+	touch .gitignore
+	open .gitignore -a Atom
+
+		/node_modules	//folder ignored
+		npm-debug.log	//file ignored
+		DS_Store		//file ignored	//folder layout
+		/*.env
+
+9) Deploy Applicationto Heroku
+	git add .
+	git commit -m "Add gitignore, procfileand update ports" 
+	git push heroku master	
+	//upload things
+	//compress objects
+	//build it
+	//run npm install on  heroku side
+	//BUILD SUCCEEDED
+	gentle-stream-47174.herokuapp.com
+
+10) Access gentle-stream-47174.herokuapp.com and use TodoList App
